@@ -6,7 +6,7 @@
 % m = 11;
 % iter = 10000;
 m = 6;   % number of nodes, could be set to less than or equal to 11
-iter = 1500; % iteration times, it should be adjusted according the scale
+iter = 1500; % iteration times, it should be adjusted according to the node scale
 
 d = 2^m; % number of states
 p = d+1;
