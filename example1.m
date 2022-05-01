@@ -24,6 +24,7 @@ c = 1/(2*m); % a parameter less than 1/m
 L = ones(m,m);
 L = diag(ones(m,1))+ c*(L - diag(m*ones(m,1)));
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Distributed Linear Equation Solver
 Y = DistributedLAE(H, z, L, iter);
 
@@ -44,8 +45,6 @@ for k = 1:m
         fprintf('No solusions found for node %d!\n',k);
     end
 end
-
-% return;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Centralized Linear Equation Solver
@@ -73,5 +72,3 @@ if any(sol)
 else
     fprintf('No solusions found!\n');
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
