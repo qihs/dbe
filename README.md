@@ -12,11 +12,11 @@ There are three examples in the paper.
 
 Run example1.m
 
-### Example 2: Distributed Computation of Eqilibrium of Gene Regulartory Network
+### Example 2: Distributed Computation of Eqilibrium of Gene Regulartory Network with eleven nodes
 
 (1) Conceptual Implementation: 
 
-Run example2_conceptual.m. 
+Run example2_conceptual.m
 
 Note: In Step 3 of Algorithm 2, the projection is directed computed as outcomes of a distributed algorithm.
 
