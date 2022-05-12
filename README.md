@@ -12,7 +12,7 @@ There are three examples in the paper.
 
 Run example1.m
 
-### Example 2: Distributed Computation of Eqilibrium of Gene Regulartory Network with eleven nodes
+### Example 2: Distributed computation of qqilibrium of gene regulartory network with eleven nodes
 
 (1) Conceptual Implementation: 
 
