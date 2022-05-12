@@ -15,20 +15,19 @@ z1 = Theta1(1);
 z2 = Theta1(0);
 z3 = Theta1(0);
 
-
 H = {H1, H2, H3};
 z = {z1, z2, z3};
 
-% Generating an adjacent matrix L of a connected graph for all the nodes
+% Generating an adjacent matrix L of a connected graph for all nodes
 c = 1/(2*m); % a parameter less than 1/m
 L = ones(m,m);
 L = diag(ones(m,1))+ c*(L - diag(m*ones(m,1)));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Distributed Linear Equation Solver
+% Using the DistributedLAE algorithm
 Y = DistributedLAE(H, z, L, iter);
 
-fprintf('Distributed Linear Equation Solver: \n\n');
+fprintf('End-to-end Implementation: \n\n');
 for k = 1:m
     sol = BooleanVectorSearch(Y{k});
     % if any solutions found, convert them from tensor space to binary space
@@ -47,7 +46,7 @@ for k = 1:m
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Centralized Linear Equation Solver
+% Conceptual Implementation
 HH = vertcat(H{:});
 zz = vertcat(z{:});
 y = zeros(d,p);
@@ -57,8 +56,8 @@ for s = 1:p
         y(:,s) = y(:,s)+Proj(HH,zz,x0)/m;
     end
 end
+fprintf('\nConceptual Implementation: ');
 sol = BooleanVectorSearch(y);
-fprintf('\nCentralized Linear Equation Solver: ');
 % if any solutions found, convert them from tensor space to binary space
 if any(sol)
     num_sols = size(sol,2);

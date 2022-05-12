@@ -1,12 +1,7 @@
 % This example is from http://www.pnas.org/cgi/doi/10.1073/pnas.0305937101
 % with 11 Nodes, which are Cln3; MBF; SBF; Cln1,2; Cdh1; Swi5; Cdc20; Clb5,6; Sic1; Clb1,2; Mcm1
 
-% It will take a quite long time for calculating 11 nodes, so we can use a
-% small m to check the distributed algorithm
-m = 11;   % number of nodes, could be set to less than or equal to 11
-iter = 10000; % iteration times, it should be adjusted according to the node scale
-% m = 5;
-% iter = 1000;
+m = 11;  % number of nodes, could be set to less than or equal to 11
 
 d = 2^m; % number of states
 p = d+1;
@@ -68,32 +63,31 @@ end
 zz = zeros(2*m,1);
 zz(1:2:2*m) = 1;
 
-% Put the H_i and Z_i of all nodes in a cell array
-H = mat2cell(HH, 2*ones(1,m));
-z = mat2cell(zz, 2*ones(1,m));
+% To accelerate the speed, we computer some matrices in advance
+invHH = pinv(HH);
+eHH = eye(size(HH,2)) - invHH*HH;
 
-% Generating an adjacent matrix L of a connected graph for all nodes
-c = 1/(2*m); % a parameter less than 1/m
-L = ones(m,m);
-L = diag(ones(m,1))+ c*(L - diag(m*ones(m,1)));
-
-Y = DistributedLAE(H, z, L, iter);
-
-fprintf('End-to-end Implementation:\n\n');
-for k = 1:m
-    sol = BooleanVectorSearch(Y{k},1e-10);
-    % if any solutions found, convert them from tensor space to binary space
-    if any(sol)
-        num_sols = size(sol,2);
-        sol_bin = zeros(num_sols,m);
-        ss = find(sol==1)-d*(0:(num_sols-1))';
-        for i = 1:num_sols
-            sol_bin(i,:) = dec2bin(ss(i)-1,m)-'0';
-        end
-        fprintf('There are %d solution(s) found for node %d (each row is a solution):\n\n',num_sols,k);
-        disp(sol_bin);
-    else
-        fprintf('No solusions found for node %d!\n',k);
+y = zeros(d,p);
+for s = 1:p
+    for i = 1:m
+        x0 = rand(d,1);
+        y(:,s) = y(:,s)+(eHH*x0+invHH*zz)/m;
+%         y(:,s) = y(:,s)+Proj(HH,zz,x0)/m;
     end
 end
 
+fprintf('Conceptual Implementation:\n\n');
+sol = BooleanVectorSearch(y,1e-10);
+% if any solutions found, convert them from tensor space to binary space
+if any(sol)
+    num_sols = size(sol,2);
+    sol_bin = zeros(num_sols,m);
+    ss = find(sol==1)-d*(0:(num_sols-1))';
+    for i = 1:num_sols
+        sol_bin(i,:) = dec2bin(ss(i)-1,m)-'0';
+    end
+    fprintf('There are %d solution(s) found (each row is a solution):\n\n',num_sols);
+    disp(sol_bin);
+else
+    fprintf('No solusions found!\n');
+end
